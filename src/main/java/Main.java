@@ -1,0 +1,42 @@
+import java.awt.Color;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import board.BoardConfig;
+import board.Dimension;
+import game.Game;
+import interfaces.IGame;
+import interfaces.IPlayer;
+import pieces.Position;
+import player.Player;
+import player.PlayerCursor;
+import view.GamePanel;
+
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("KFChess");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+            BoardConfig boardConfig = new BoardConfig(new Dimension(8),new Dimension(64*8));
+
+            IPlayer p1 = new Player("Player1",new PlayerCursor(new Position(0,0), Color.RED), boardConfig);
+            IPlayer p2 = new Player("player2",new PlayerCursor(new Position(7,7),Color.BLUE), boardConfig);
+
+            IGame game = new Game(boardConfig ,p1, p2);
+            GamePanel gameView = new GamePanel(game);
+
+            // Add debug prints
+            System.out.println("Debug: Initial game state setup");
+
+            gameView.run();
+
+            frame.setContentPane(gameView); 
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
+}
+
+
