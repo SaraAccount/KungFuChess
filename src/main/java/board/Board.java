@@ -1,9 +1,7 @@
 package board;
 
 import java.util.List;
-import events.EventPublisher;
-import events.GameEvent;
-import events.listeners.ActionData;
+
 import interfaces.IBoard;
 import interfaces.IPiece;
 import interfaces.IPlayer;
@@ -165,7 +163,7 @@ public class Board implements IBoard {
 
     private void logCapture(String message, IPiece piece) {
         String mes = message + ": " + piece.getId();
-        EventPublisher.getInstance().publish(GameEvent.PIECE_CAPTURED, new GameEvent(GameEvent.PIECE_CAPTURED, new ActionData(-1 ,"score update")));
+        // EventPublisher.getInstance().publish(GameEvent.PIECE_CAPTURED, new GameEvent(GameEvent.PIECE_CAPTURED, new ActionData(-1 ,"score update")));
         LogUtils.logDebug(mes);
     }
 

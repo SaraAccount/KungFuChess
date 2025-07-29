@@ -40,7 +40,7 @@ public class Player implements IPlayer{
 
         for(int i:BoardConfig.rowsOfPlayer.get(id)){
             for(int j = 0; j < 8; j++) {
-                IPiece p = PiecesFactory.createPieceByCode(EPieceType.valueOf(LoadPieces.board[i][j].charAt(0) + ""), id, new Position(i, j), bc);
+                IPiece p = PiecesFactory.createPieceByType(EPieceType.valueOf(LoadPieces.board[i][j].charAt(0) + ""), id, new Position(i, j), bc);
                 this.pieces.add(p);
                 // score += p.getType().getScore();
             }
@@ -120,6 +120,11 @@ public class Player implements IPlayer{
     @Override
     public int getScore(){
         return score;
+    }
+
+    @Override
+    public void setScore(int score){
+        this.score = score;
     }
 
 }

@@ -1,14 +1,20 @@
 package pieces;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import board.BoardConfig;
 import graphics.GraphicsLoader;
 import interfaces.IGraphicsData;
 import interfaces.IPhysicsData;
 import interfaces.IState;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import state.GraphicsData;
 import state.PhysicsData;
 import state.State;
@@ -16,34 +22,16 @@ import types.EPieceType;
 import types.EState;
 import utils.LogUtils;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
-
-/**
- * Factory for creating pieces by code and position.
- */
 public class PiecesFactory {
 
-    private static double TILE_SIZE;
+    private static double tileSize;
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    /**
-     * Creates a piece by its code, position, and board configuration.
-     * Loads all states and graphics for the piece from resources.
-     * @param code Piece code
-     * @param pos Position on the board
-     * @param config Board configuration
-     * @return Piece instance or null if failed
-     */
-    public static Piece createPieceByCode(EPieceType code, int playerId, Position pos, BoardConfig config) {
-        TILE_SIZE = config.tileSize;
+    public static Piece createPieceByType(EPieceType type, int playerId, Position pos, BoardConfig config) {
+        tileSize = config.tileSize;
 
-        // ...continue as previously built, using tileSize
         Map<EState, IState> states = new HashMap<>();
-        String basePath = "/pieces/" + code.getVal() + "/states/";
+        String basePath = "/pieces/" + type.getVal() + "/states/";
 
         try {
             // Step 1 – Find all existing states in the states directory
@@ -80,7 +68,7 @@ public class PiecesFactory {
                 int fps = graphicsNode.path("frames_per_sec").asInt(1);
                 boolean isLoop = graphicsNode.path("is_loop").asBoolean(true);
 
-                BufferedImage[] sprites = GraphicsLoader.loadAllSprites(code, BoardConfig.getPlayerOf(pos.getRow()), stateName);
+                BufferedImage[] sprites = GraphicsLoader.loadAllSprites(type, BoardConfig.getPlayerOf(pos.getRow()), stateName);
                 if (sprites.length == 0) {
                     System.err.println("No sprites for state: " + stateName);
                     LogUtils.logDebug("No sprites for state: " + stateName);
@@ -88,18 +76,18 @@ public class PiecesFactory {
                 }
 
                 IGraphicsData graphics = new GraphicsData(sprites, fps, isLoop);
-                IState state = new State(stateName, pos, pos, TILE_SIZE, physics, graphics);
+                IState state = new State(stateName, pos, pos, tileSize, physics, graphics);
                 states.put(stateName, state);
             }
 
             if (states.isEmpty()) {
-                LogUtils.logDebug("No states loaded for piece: " + code.getVal());
+                LogUtils.logDebug("No states loaded for piece: " + type.getVal());
                 return null;
             }
 
             // Step 3 – Create the Piece with the first state as default
             EState initialState = EState.IDLE;
-            return new Piece(code,playerId, states, initialState, pos);
+            return new Piece(type,playerId, states, initialState, pos);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,14 +1,16 @@
 package pieces;
 
+import java.awt.geom.Point2D;
+import java.io.IOException;
+import java.util.Map;
+
 import board.BoardConfig;
-import interfaces.*;
+import interfaces.IPiece;
+import interfaces.IState;
 import move.Moves;
 import types.EPieceType;
 import types.EState;
 import utils.LogUtils;
-import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.util.Map;
 
 public class Piece implements IPiece {
 

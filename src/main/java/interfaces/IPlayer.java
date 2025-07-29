@@ -26,4 +26,7 @@ public interface IPlayer {
     public ICommand handleSelection(IBoard board);
 
     int getScore();
+    
+    void setScore(int score);
+
 }
